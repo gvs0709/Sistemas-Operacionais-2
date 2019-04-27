@@ -1,13 +1,13 @@
 #include<stdio.h>
 #include<unistd.h>
 
-extern int isopen (int fd);
+extern int isopen(int fd);
 
-int main (void){
+int main(void){
     int nopen, fd;
 
-    for (nopen = fd = 0; fd < getdtablesize(); fd++){
-        if (isopen (fd)){
+    for(nopen = fd = 0; fd < getdtablesize(); fd++){
+        if(isopen(fd)){
             nopen++;
         }
     }

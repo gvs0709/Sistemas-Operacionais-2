@@ -16,7 +16,7 @@ int main(void){
         }
     }
 
-    printf ("Existem %d descritores abertos\n", nopen);
+    printf ("\nExistem %d descritores abertos\n", nopen);
     return (0);
 }
 
@@ -28,7 +28,7 @@ int isopen(int fd){
     }
     
     else{
-    	printf("Erro fstat: %s\narquivo com fd = %d\n", strerror(errno), fd);
+    	fprintf(stderr, "Erro fstat: '%s', fd do arquivo: %d\n", strerror(errno), fd);
         return 0;
     }
 }

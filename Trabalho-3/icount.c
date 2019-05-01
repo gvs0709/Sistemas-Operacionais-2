@@ -92,7 +92,7 @@ void conta(const char *path){
 }
 
 int main(int argc, char **argv){
-    int opt, mod_pos = -1, num_mods = 0;
+    int opt, mod_pos = -1, num_mods = 0, invalid_mod = 0;
     char *path;
 
     //Faz parse dos modificadores
@@ -122,7 +122,7 @@ int main(int argc, char **argv){
 
     		case '?':
     			file_type = 0;
-    			fprintf(stderr, "Modificador inválido. Utilizando \'-r\'\n");
+    			invalid_mod = 1;
 
     		default:
     			file_type = 0;
@@ -140,6 +140,10 @@ int main(int argc, char **argv){
     		fprintf(stderr, "Favor utilizar o formato: %s <modificador> <diretorio 1> <diretorio 2> ... <diretorio n>\n", argv[0]);
     		return 1;
     	}
+    }
+
+    if(invalid_mod){
+    	fprintf(stderr, "Modificador inválido. Utilizando \'-r\'\n");
     }
 
     struct stat sb;

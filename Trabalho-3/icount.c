@@ -133,6 +133,8 @@ int main(int argc, char **argv){
     	}
     }
 
+    struct stat sb;
+
     //Se invocar apenas o programa, usa -r e '.' como padrao
     if(argc < 2){
     	path = ".";
@@ -149,8 +151,13 @@ int main(int argc, char **argv){
     		path = argv[1];
     	}
 
-    	walk_dir(path, (void *) conta);
-    	printf("%d\n", contador);
+    	//Checa se diretorio informado existe
+    	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)){
+    		walk_dir(path, (void *) conta);
+    		printf("%d\n", contador);
+    	}else{
+    		fprintf(stderr, "Erro. Diretorio nao existe\n");
+    	}
 
     //Caso contrario, faz para cada um dos diretorios passados
     }else{
@@ -167,8 +174,14 @@ int main(int argc, char **argv){
     		contador = 0;
 
     		path = argv[i];
-    		walk_dir(path, (void *) conta);
-    		printf("\"%s\": %d\n", path, contador);
+
+    		//Checa se diretorio informado existe
+    		if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)){
+    			walk_dir(path, (void *) conta);
+    			printf("\"%s\": %d\n", path, contador);
+    		}else{
+    			fprintf(stderr, "Erro. Diretorio \"%s\" nao existe\n", path);
+    		}
     	}
     }
     

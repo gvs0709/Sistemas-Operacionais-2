@@ -91,7 +91,7 @@ int main(int argc, char **argv){
     char *path;
 
     //Faz parse dos modificadores
-    while((opt = getopt(argc, argv, "rdlbc")) != -1){
+    while((opt = getopt(argc, argv, ":rdlbc")) != -1){
     	
     	//Ve qual tipo de arquivo deve ser checado
     	switch(opt){
@@ -114,6 +114,10 @@ int main(int argc, char **argv){
     		case 'c':
     			file_type = 4;
     			break;
+
+    		case '?':
+    			file_type = 0;
+    			fprintf(stderr, "Modificador inválido. Utilizando \'-r\'\n");
 
     		default:
     			file_type = 0;

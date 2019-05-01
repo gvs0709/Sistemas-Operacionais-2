@@ -62,7 +62,9 @@ void conta(const char *path){
 	}
 
 	if(file_type == 1){
-		contador++;
+		if(S_ISDIR(buf.st_mode)){
+			contador++;
+		}
 	}
 
 	if(file_type == 2){

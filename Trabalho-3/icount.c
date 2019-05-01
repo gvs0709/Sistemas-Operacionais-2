@@ -62,9 +62,7 @@ void conta(const char *path){
 	}
 
 	if(file_type == 1){
-		if(S_ISDIR(buf.st_mode)){
-			contador++;
-		}
+		contador++;
 	}
 
 	if(file_type == 2){
@@ -83,6 +81,11 @@ void conta(const char *path){
 		if(S_ISCHR(buf.st_mode)){
 			contador++;
 		}
+	}
+
+	//Se encontrar um diretorio, entra recursivamente nele para buscar arquivos
+	if(S_ISDIR(buf.st_mode)){
+		walk_dir(path, (void *) conta);
 	}
 }
 

@@ -36,8 +36,6 @@ int walk_dir(const char *path, void (*func) (const char *)){
 			continue;
 		strcpy (p, dp->d_name);
 
-		printf("%s\n", full_path);
-
 		/* “full_path” armazena o caminho */(*func) (full_path);
 	}
 
@@ -57,52 +55,93 @@ void conta(const char *path){
 	stat(path, &buf);
 
 	if(file_type == 0){
-		if(buf.st_mode == S_IFREG){
+		if(S_ISREG(buf.st_mode)){
 			contador++;
 		}
 	}
-	printf("%d\n", contador);
+
+	if(file_type == 1){
+		if(S_ISDIR(buf.st_mode)){
+			contador++;
+		}
+	}
+
+	if(file_type == 2){
+		if(S_ISLNK(buf.st_mode)){
+			contador++;
+		}
+	}
+
+	if(file_type == 3){
+		if(S_ISBLK(buf.st_mode)){
+			contador++;
+		}
+	}
+
+	if(file_type == 4){
+		if(S_ISCHR(buf.st_mode)){
+			contador++;
+		}
+	}
 }
 
 int main(int argc, char **argv){
-    int opt;
+    int opt, mod_pos = -1;
+    char *path;
 
-    if(argc < 2 || argc > 3){
-    	fprintf(stderr, "Favor utilizar o formato: %s <modificador> <diretorio>\n", argv[0]);
-    	return 1;
+    int num_mods = 0;
+
+    while((opt = getopt(argc, argv, "rdlbc")) != -1){
+
+    	switch(opt){
+    		case 'r':
+    			file_type = 0;
+    			break; 
+    		case 'd':
+    			file_type = 1;
+    			break;
+    		case 'l':
+    			file_type = 2;
+    			break;
+    		case 'b':
+    			file_type = 3;
+    			break;
+    		case 'c':
+    			file_type = 4;
+    			break;
+    		default:
+    			file_type = 0;
+    			break;
+    	}
+
+    	num_mods++;
+    	mod_pos = optind - 1;
+
+    	if(num_mods > 1){
+    		fprintf(stderr, "Favor utilizar apenas um modificador\n");
+    		fprintf(stderr, "Favor utilizar o formato: %s <modificador> <diretorio 1> <diretorio 2> ... <diretorio n>\n", argv[0]);
+    		return 1;
+    	}
     }
 
-    walk_dir(".", (void*) conta);
+    printf("mod_pos: %d\n", mod_pos);
 
-    if(strlen(argv[1]) == 2){
+    if(argc < 2 || optind >= argc){
+    	path = ".";
+    	walk_dir(path, (void *) conta);
+    	printf("%d\n", contador);
+    }else{
+    	for(int i = 1; i < argc; i++){
+    		contador = 0;
+    		if(i == mod_pos){
+    			continue;
+    		}
 
-	    opt = getopt(argc, argv, "rdlbc");
-
-	    switch(opt){
-	    	case 'r':
-	    		file_type = 0;
-	    		break; 
-	    	case 'd':
-	    		printf("oi2\n");
-	    		break;
-	    	case 'l':
-	    		break;
-	    	case 'b':
-	    		break;
-	    	case 'c':
-	    		break;
-	    	default:
-	    		break;
-	    }
-
-	}
-
-    // for(nopen = fd = 0; fd < getdtablesize(); fd++){
-    //     if(isopen(fd)){
-    //         nopen++;
-    //     }
-    // }
-
-    // printf ("\nExistem %d descritores abertos\n", nopen);
+    		path = argv[i];
+    		walk_dir(path, (void *) conta);
+    		printf("\"%s\": %d\n", path, contador);
+    	}
+    }
+    
     return (0);
 }

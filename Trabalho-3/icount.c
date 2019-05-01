@@ -90,7 +90,10 @@ int main(int argc, char **argv){
     int opt, mod_pos = -1, num_mods = 0;
     char *path;
 
+    //Faz parse dos modificadores
     while((opt = getopt(argc, argv, "rdlbc")) != -1){
+    	
+    	//Ve qual tipo de arquivo deve ser checado
     	switch(opt){
     		case 'r':
     			file_type = 0;
@@ -116,31 +119,52 @@ int main(int argc, char **argv){
     			file_type = 0;
     	}
 
+    	//Checa a quantidade de modificadores que já foram vistos
     	num_mods++;
+
+    	//Guarda a posicao do modificador em argv
     	mod_pos = optind - 1;
 
-    	if(num_mods > 1){
+    	//Se tiver mais de um modificador, parar de rodar
+    	if(num_mods > 1){	
     		fprintf(stderr, "Favor utilizar apenas um modificador\n");
     		fprintf(stderr, "Favor utilizar o formato: %s <modificador> <diretorio 1> <diretorio 2> ... <diretorio n>\n", argv[0]);
     		return 1;
     	}
     }
 
-    //printf("mod_pos: %d\n", mod_pos);
-
-    if(argc < 2 || optind >= argc){
+    //Se invocar apenas o programa, usa -r e '.' como padrao
+    if(argc < 2){
     	path = ".";
     	walk_dir(path, (void *) conta);
     	printf("%d\n", contador);
-    }
 
-    else{
-    	for(int i = 1; i < argc; i++){
+    //Senao, checa se invocou com um modificador ou um path
+    }else if(argc == 2){
+    	
+    	path = ".";
+
+    	//Se nao tiver usado um modificador, setar o path passado
+    	if(mod_pos == -1){
+    		path = argv[1];
+    	}
+
+    	walk_dir(path, (void *) conta);
+    	printf("%d\n", contador);
+
+    //Caso contrario, faz para cada um dos diretorios passados
+    }else{
+
+    	int inicio = 2;
+
+    	//Identifica onde no argv vai comecar
+    	if(mod_pos == -1){
+    		inicio = 1;
+    	}
+
+    	//Para cada um dos diretorios em argv, faz a checagem
+    	for(int i = inicio; i < argc; i++){
     		contador = 0;
-
-    		if(i == mod_pos){
-    			continue;
-    		}
 
     		path = argv[i];
     		walk_dir(path, (void *) conta);

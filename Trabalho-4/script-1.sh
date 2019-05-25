@@ -12,26 +12,31 @@ while true; do # Main options loop
 
 
 	if [ "$option" = "1" ]; then
-		echo "\nCurrent Date and Time:"
+		echo ""
+		echo "Current Date and Time:"
 		date
 		echo "" # New line after text
 
 	elif [ "$option" = "2" ]; then
-		echo "\nDisk Usage Information:"
+		echo ""
+		echo "Disk Usage Information:"
 		df -h | grep -i Filesystem && df -h | grep -i /dev/sd # Get first line and every line starting with /dev/sd
 		echo ""
 
 	elif [ "$option" = "3" ]; then
-		echo "\nUser information:"
+		echo ""
+		echo "User information:"
 		finger
 		echo ""
 
 	elif [ "$option" = "4" ]; then
-		echo "\nExiting script..."
+		echo ""
+		echo "Exiting script..."
 		break
 
 	else
-		echo "\nInvalid Option!"
+		echo ""
+		echo "Invalid Option!"
 		echo ""
 	fi
 

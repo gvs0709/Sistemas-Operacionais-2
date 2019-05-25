@@ -14,19 +14,20 @@ while true; do # Main options loop
 	if [ "$option" = "1" ]; then
 		echo ""
 		echo "Current Date and Time:"
-		date
+		date "+%a %d %b %Y%t%H:%M:%S"
 		echo "" # New line after text
 
 	elif [ "$option" = "2" ]; then
 		echo ""
 		echo "Disk Usage Information:"
-		df -h | grep -i Filesystem && df -h | grep -i /dev/sd # Get first line and every line starting with /dev/sd
+		#df -h | grep -i Filesystem && df -h | grep -i /dev/sd # Get first line and every line starting with /dev/sd
+		df -h /dev/sd* | grep -v ^[^/]"dev"
 		echo ""
 
 	elif [ "$option" = "3" ]; then
 		echo ""
-		echo "User information:"
-		finger
+		echo "Currently logged users:"
+		users
 		echo ""
 
 	elif [ "$option" = "4" ]; then

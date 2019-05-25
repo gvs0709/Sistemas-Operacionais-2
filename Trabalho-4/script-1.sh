@@ -26,8 +26,9 @@ while true; do # Main options loop
 
 	elif [ "$option" = "3" ]; then
 		echo ""
-		echo "Currently logged users:"
-		users
+		echo "Currently logged users information:"
+		#users
+		w -f | sed "s/ [0-9][0-9]:[0-9][0-9]:[0-9][0-9]//" # Shows logged users information, system uptime and load average for the past 1, 5 and 15 min
 		echo ""
 
 	elif [ "$option" = "4" ]; then

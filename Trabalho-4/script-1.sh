@@ -21,7 +21,7 @@ while true; do # Main options loop
 		echo ""
 		echo "Disk Usage Information:"
 		#df -h | grep -i Filesystem && df -h | grep -i /dev/sd # Get first line and every line starting with /dev/sd
-		df -h /dev/sd* | grep -v ^[^/]"dev"
+		df -h /dev/sd* | grep -v ^[^/]*"dev"
 		echo ""
 
 	elif [ "$option" = "3" ]; then

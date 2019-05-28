@@ -53,33 +53,41 @@ int file_type, contador = 0;
 void conta(const char *path){
 	struct stat buf;
 
-	stat(path, &buf);
-
 	if(file_type == 0){
+        stat(path, &buf);
+        
 		if(S_ISREG(buf.st_mode)){
 			contador++;
 		}
 	}
 
 	if(file_type == 1){
+        stat(path, &buf);
+        
 		if(S_ISDIR(buf.st_mode)){
 			contador++;
 		}
 	}
 
 	if(file_type == 2){
+        lstat(path, &buf);
+        
 		if(S_ISLNK(buf.st_mode)){
 			contador++;
 		}
 	}
 
 	if(file_type == 3){
+        stat(path, &buf);
+        
 		if(S_ISBLK(buf.st_mode)){
 			contador++;
 		}
 	}
 
 	if(file_type == 4){
+        stat(path, &buf);
+        
 		if(S_ISCHR(buf.st_mode)){
 			contador++;
 		}

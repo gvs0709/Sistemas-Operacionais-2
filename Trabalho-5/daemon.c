@@ -11,7 +11,7 @@ void signal_handler(int sig){
 
     //Se for o filho, atualiza o log
     if(pid == 0){
-        system("ps aux | grep \"Z\" | grep -v \"grep\" > daemon_log.txt");
+        system("ps axo pid,ppid,stat,comm | grep Z >> daemon_log.txt && echo \"====================================\" >> daemon_log.txt");
     }
     
     else{
@@ -54,6 +54,10 @@ int main(int argc, char *argv[]){
     //Seta os listerners dos signals SIGTERM e SIGINT
     sigaction(SIGTERM, &act, NULL);
     sigaction(SIGINT, &act, NULL);
+
+    if(pid == 0){
+        system("ps axo pid,ppid,stat,comm | head -n 1 > daemon_log.txt");
+    }
 
     while(1){
         if(pid == 0){

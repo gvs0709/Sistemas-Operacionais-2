@@ -2,7 +2,8 @@
 
 if [ "$1" = "" ]; then
     echo "É necessário pelo menos 1 parâmetro!"
-    echo "Uso: $0 [nº de zombies] [tempo do daemon em segundos]"
+    echo "Uso: $0 [nº de zombies] [tempo do daemon em segundos] (opcional)"
+    echo ""
     exit 0
 fi
 

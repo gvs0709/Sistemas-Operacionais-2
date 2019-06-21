@@ -29,7 +29,7 @@ void signal_handler(int sig){
 }
 
 int main(int argc, char *argv[]){
-    int segundos = 2; // Tempo padrão de verificação
+    int segundos = 2, sid; // Tempo padrão de verificação
     
     if(argc > 1){
         segundos = atoi(argv[1]); // Se foi passado um tempo de verificação, troca o padrão pelo tempo passado
@@ -37,6 +37,29 @@ int main(int argc, char *argv[]){
     }
 
     pid = fork();
+
+    if(pid < 0){
+        fprintf(stderr, "[daemon] Falha ao ir para background!\n");
+        exit(1);
+    }
+
+    if(pid){ // Passa para background
+        exit(0);
+    }
+
+    sid = setsid(); // Troca o lider do grupo do processo para o filho e cria uma nova seção
+
+    if(sid < 0){
+        fprintf(stderr, "[daemon] Falha no setsid!\n");
+        exit(1);
+    }
+
+    pid = fork();
+
+    if(pid < 0){
+        fprintf(stderr, "[daemon] Falha no fork!\n");
+        exit(1);
+    }
 
     sigset_t mask;
     sigfillset(&mask);//Cria máscara ignorando todos os sinais inicialmente

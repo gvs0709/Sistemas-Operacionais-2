@@ -43,7 +43,7 @@ while true; do
         echo ""
     
     elif [ "$op" = "k" ]; then
-        PID=$(ps axo comm,pid | grep ^"zombie" | grep -v ">$" | head -n 1 | grep -Eo [0-9]*$) # Pega o pid dos zombies n ordem em que foram criados
+        PID=$(ps axo comm,pid | grep ^"zombie" | grep -v "zombie".*"<" | head -n 1 | grep -Eo [0-9]*$) # Pega o pid dos zombies na ordem em que foram criados
         
         kill -15 ${PID} >/dev/null 2>&1 # Mata os zombies na ordem em que foram criados
         nZombie=$(($nZombie-1))

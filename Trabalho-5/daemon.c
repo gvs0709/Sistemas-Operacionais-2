@@ -12,7 +12,7 @@ void signal_handler(int sig){
     //Se for o filho, atualiza o log
     if(pid == 0){
         system("echo \"====================================\" >> daemon_log.txt");
-        system("ps axo pid,ppid,stat,comm | grep Z >> daemon_log.txt && echo \"====================================\" >> daemon_log.txt");
+        system("ps axo pid,ppid,stat,comm | grep Z >> daemon_log.txt");
     }
     
     else{

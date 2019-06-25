@@ -28,27 +28,45 @@ fi
 
 while true; do
     echo "Escolha uma opção:"
-    echo "z - cria mais $1 zombies"
-    echo "k - mata $1 zombies"
+    echo "z - cria mais zombies"
+    echo "k - mata zombies"
     echo "d - mata daemon e encerra este script"
     echo -n "> "
     read op
     echo ""
     
     if [ "$op" = "z" ]; then
-        ./zombie $1
-        nZombie=$(($nZombie+1))
+        echo -n "Quantos zombies? "
+        read nZ
         
-        echo "Feito. $nZombie (x $1) zombies para matar"
-        echo ""
+        if [ "$nZ" = "" ] || [[ "$nZ" = [^0-9] ]]; then
+            ./zombie $1
+            nZombie=$(($nZombie+1))
+        
+            echo "Feito. $nZombie zombies para matar (usado argumento padrão: $1)"
+            echo ""
+            
+        else
+            ./zombie $nZ
+            nZombie=$(($nZombie+1))
+            
+            echo "Feito. $nZombie zombies para matar (usado $nZ)"
+            echo ""
+        fi
     
     elif [ "$op" = "k" ]; then
-        PID=$(ps axo comm,pid | grep ^"zombie" | grep -v "zombie".*"<" | head -n 1 | grep -Eo [0-9]*$) # Pega o pid dos zombies na ordem em que foram criados
-        
-        kill -15 ${PID} >/dev/null 2>&1 # Mata os zombies na ordem em que foram criados
-        nZombie=$(($nZombie-1))
-        echo "Feito. $nZombie (x $1) zombies para matar"
-        echo ""
+        if [ "$nZombie" -gt 0 ]; then
+            PID=$(ps axo comm,pid | grep ^"zombie" | grep -v "zombie".*"<" | head -n 1 | grep -Eo [0-9]*$) # Pega o pid dos zombies na ordem em que foram criados
+            
+            kill -15 ${PID} >/dev/null 2>&1 # Mata os zombies na ordem em que foram criados
+            nZombie=$(($nZombie-1))
+            echo "Feito. $nZombie zombies para matar"
+            echo ""
+            
+        else
+            echo "Não há zombies para matar!"
+            echo ""
+        fi
     
     elif [ "$op" = "d" ]; then
         PID=$(ps axo comm,pid | grep ^"daemon" | head -n 1 | grep -Eo [0-9]*$) # Pega o pid do daemon

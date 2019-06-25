@@ -39,7 +39,7 @@ while true; do
         echo -n "Quantos zombies? "
         read nZ
         
-        if [ "$nZ" = "" ] || [[ "$nZ" = [^0-9] ]]; then
+        if [[ "$nZ" = [^0-9]* ]]; then
             ./zombie $1
             nZombie=$(($nZombie+1))
         

@@ -36,7 +36,7 @@ while true; do
     echo ""
     
     if [ "$op" = "z" ]; then
-        echo -n "Quantos zombies? "
+        echo -n "Quantos zombies? ('Enter' cria $1 zombies) "
         read nZ
         
         if [[ "$nZ" = [^0-9]* ]]; then

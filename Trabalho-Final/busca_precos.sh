@@ -122,25 +122,25 @@ while getopts ":ugq" opt; do
 		exit
 	fi
 
-	# Busca quantidade de linhas que contém a string passada como input
-	num_matches=$( grep -c -ie "^.*$2.*$" name_ID_price_list.txt )
-
-	let num_matches=num_matches+1
-
-	# Se a consulta for muito pouco específica, vai retornar muitas entradas
-	# Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
-	if [ "$num_matches" -gt 10 ]; then
-		echo "Too many matches. Please be more specific with your search"
-		exit
-	fi
-
-	echo $num_matches "Matches Found:"
-
+	max_entries=21
 	count=1
 	p="p"
 
-	# Para cada uma das entradas encontradas, buasca o nome, ID e preço do jogo
-	while [ ! "$count" -eq "$num_matches" ]; do
+	# Busca quantidade de linhas que contém a string passada como input
+	num_matches=$( grep -c -ie "^.*$2.*$" name_ID_price_list.txt )
+
+	# Se a consulta for muito pouco específica, vai retornar muitas entradas
+	# Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
+	if [ "$num_matches" -gt "$max_entries" ]; then
+		echo "Too many matches. Displaying the first $((max_entries-1)):"
+	else
+		echo $num_matches "Matches Found:"
+	fi
+
+	let num_matches=num_matches+1
+
+	# Para cada uma das entradas encontradas, busca o nome, ID e preço do jogo
+	while [ ! "$count" -eq "$max_entries" ]; do
 
 		nome=$( grep -ie "^.*$2.*$" name_ID_price_list.txt | sed -n "$count p" )
 

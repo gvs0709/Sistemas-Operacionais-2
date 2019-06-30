@@ -1,58 +1,73 @@
 #!/bin/bash
 
+# Checks if name_ID_list.json exists
+if [ ! -e "name_ID_list.json" ]; then
+    echo "Downloading App list..."
+    
+    wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v0001/ > name_ID_list.json
+    
+    echo "App list downloaded!"
+    echo ""
+fi
+
 while getopts ":ugq" opt; do
   case ${opt} in
-    u ) # Atualiza o banco de dados: Nomes/ID's
+    u ) # Update data base: Names/ID's
+    echo "Updating app list..."
+    
 	wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v0001/ > name_ID_list.json
+	
+	echo "App list updated!"
+	echo ""
       ;;
-    g ) # Atualiza o banco de dados: Nomes/ID's/Preço
+    g ) # Update data base: Names/ID's/Price
 
-	# Busca todos os ID's dos jogos no banco de dados
+	# Search for all game IDs on the date base
 	game_IDs=$( cat name_ID_list.json | grep 'appid' | grep -oP '[^\D]*' )
 	
-	# Cria um arquivo para guardar os valores encontrados, se o mesmo já não existir
+	# Create a file to store retrieved values if it doesnt exist already
 	if [ ! -f "name_ID_price_list.txt" ]; then
 		echo "" > name_ID_price_list.txt
 	fi
 
 	count=0
 
-	echo "Buscando jogos... ($count/$( wc -w <<< $game_IDs ))"
+	echo "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
 		
-	# Para cada um dos ID's dos jogos no banco de dados
+	# For each game ID on the DB
 	for ID in $game_IDs; do
 
-		# Faz a busca pelo jogo na API
+		# Searches for the game on the API
 		data=$( wget -qO - https://store.steampowered.com/api/appdetails?appids=$ID )
 
 		count=$( expr $count + 1 )
 
-		# Se não retornou nada, parte para o próximo ID. Muitos não são encontrados mesmo
-		# Não sabemos a qualidade da API com que estamos lidando
+		# If there is no return goes to the next ID. There are multiple IDs that are not found
+		# The reliability of the API is unknown
 		if [ -z "$data" ]; then
 			echo -en "\r"
-			echo "Falha ao buscar jogo. ID: $ID. Jogo não encontrado"
-			echo -n "Buscando jogos... ($count/$( wc -w <<< $game_IDs ))"
+			echo "Failed to fetch game. ID: $ID. Game not found"
+			echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
 			continue
 		fi
 		
-		# Checa o status da busca. Se não houve êxito, não atualiza jogo
+		# Checks search status. If there's no success, dont update game
 		status=$( echo $data | grep -o 'success":[a-z]*' --color=always | sed -n '1p' | cut -b 21- )
 
-		# Remove lixo do fim da string
+		# Removes trash from the end of the string
 		status=${status:: -6}
 
-		# Checa se houve sucesso na hora de buscar o jogo
+		# Checks if the game fetch was successfull
 		if [ $status == "false" ]; then
 			echo -en "\r"
-			echo -e "Falha ao buscar jogo. ID: $ID. Success status == False"
-			echo -n "Buscando jogos... ($count/$( wc -w <<< $game_IDs ))"
+			echo -e "Failed to fetch game. ID: $ID. Success status = False"
+			echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
 			continue
 		else
 
 			#echo "$ID"
 
-			# Caso contrário, atualiza valores do jogo
+			# Else update game values
 
 			# O sed é para trazer apenas a primeira linha e o cut é pra tirar o 'name":"' e 
 			# 'final":"' da string do nome e do preço
@@ -60,8 +75,8 @@ while getopts ":ugq" opt; do
 			nome=$( echo $data | grep -o 'name":"[^"]*' --color=always | sed -n '1p' | cut -b 19- )
 			if [ -z "$nome" ]; then
 				echo -en "\r"
-				echo "Falha ao buscar jogo. ID: $ID. Nome não encontrado"
-				echo -n "Buscando jogos... ($count/$( wc -w <<< $game_IDs ))"
+				echo "Failed to fetch game. ID: $ID. Name not found"
+				echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
 				continue
 			fi
 			nome=${nome:: -6}
@@ -69,8 +84,8 @@ while getopts ":ugq" opt; do
 			preco=$( echo $data | grep -o 'final":[0-9]*' --color=always | sed -n '1p' | cut -b 19- )
 			if [ -z "$preco" ]; then
 				echo -en "\r"
-				echo "Falha ao buscar jogo. ID: $ID. Preço não encontrado"
-				echo -n "Buscando jogos... ($count/$( wc -w <<< $game_IDs ))"
+				echo "Failed to fetch games. ID: $ID. Price not found"
+				echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
 				continue
 			fi
 			preco=${preco:: -6}
@@ -81,10 +96,9 @@ while getopts ":ugq" opt; do
 
 			#echo $tmp_preco
 
-			# Se entrada ainda não existir, insere ela no arquivo. Caso contrário
-			# substitui o valor, se for menor
+			# If entry doesnt exists, write it on the file. Otherwise swap the value if it is smaller
 			if [ -z "$tmp_id" ]; then
-				#Insere infos do jogo no arquivo
+				# Write game's info  on the file
 				echo ""		>> name_ID_price_list.txt
 				echo $nome  >> name_ID_price_list.txt
 				echo $ID    >> name_ID_price_list.txt
@@ -103,44 +117,51 @@ while getopts ":ugq" opt; do
 			fi
 
 			echo -en "\r"
-			echo -e "Jogo atualizado com sucesso. ID: $ID, Nome: $nome"
-			echo -n "Buscando jogos... ($count/$( wc -w <<< $game_IDs ))"
+			echo -e "Game successfully updated. ID: $ID, Name: $nome"
+			echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
 		fi
 	done
 	echo ""
 		#echo $game_IDs
       ;;
-    q ) # Faz uma busca no banco de dados pelo menor preço do jogo. To be implemented
+    q ) # Does a search on the DB for the game's smallest price
 
 
-	if [ ! -f "name_ID_price_list.txt" ]; then
-		echo "Arquivo de histórico não existe"
+	if [ ! -e "name_ID_price_list.txt" ]; then
+		echo "History file doesnt exists"
 	fi
 
 	if [ -z "$2" ]; then
-		echo "Favor informar o nome do Jogo: $0 -q <Nome>"
+		echo "Please inform the game's name: $0 -q <Name>"
 		exit
 	fi
 
 	max_entries=21
 	count=1
-	p="p"
 
-	# Busca quantidade de linhas que contém a string passada como input
+	# Searches how many lines contains the string passed as input
 	num_matches=$( grep -c -ie "^.*$2.*$" name_ID_price_list.txt )
+	
+	if [ "$num_matches" -eq 0 ]; then
+        echo "No matches found!"
+        echo ""
+        exit
+    fi
 
 	# Se a consulta for muito pouco específica, vai retornar muitas entradas
 	# Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
 	if [ "$num_matches" -gt "$max_entries" ]; then
 		echo "Too many matches. Displaying the first $((max_entries-1)):"
+		
+		num_matches=$max_entries
 	else
 		echo $num_matches "Matches Found:"
 	fi
 
 	let num_matches=num_matches+1
 
-	# Para cada uma das entradas encontradas, busca o nome, ID e preço do jogo
-	while [ ! "$count" -eq "$max_entries" ]; do
+	# For each of the found entries, searches for the game name, ID and price
+	while [ ! "$count" -eq "$num_matches" ]; do
 
 		nome=$( grep -ie "^.*$2.*$" name_ID_price_list.txt | sed -n "$count p" )
 
@@ -158,8 +179,8 @@ while getopts ":ugq" opt; do
 	done
 
       ;;
-    \? ) echo "Como usar: cmd [-u] [-g] [-q]"
-		 echo "Opção Inválida: $OPTARG" 1>&2
+    \? ) echo "Usage: cmd [-u] [-g] [-q]"
+		 echo "Invalid option: $OPTARG" 1>&2
       ;;
   esac
 done

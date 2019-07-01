@@ -1,0 +1,30 @@
+.\" Man page for steam-price
+.TH man 8 "01 june 2019" "1.0" "steam-price man page"
+
+.SH NAME
+steam-price \- shows a game's lowest recorded price and the current price on Valve's Steam plataform
+
+.SH SYNOPSIS
+steam-price [OPTION] [PARAMETER]
+
+.SH DESCRIPTION
+bla bla
+
+.SH OPTIONS
+-u
+bla bla
+
+-g
+bla bla
+
+-q
+Search for [PARAMETER] in Steam DB and return the current price and the lowest price ever found by the script if it was searched before
+
+.SH SEE ALSO
+what?
+
+.SH BUGS
+bugs? What bugs?
+
+.SH AUTORS
+gvs0709 and bmeurer1

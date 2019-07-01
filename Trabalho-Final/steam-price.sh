@@ -3,6 +3,9 @@
 # Done by gvs0709 and bmeurer1
 # Hosted on github.com/gvs0709/Sistemas-Operacionais-2/Trabalho-Final
 
+#install -g 0 -o 0 -m 0644 steam-price-MAN.1 /usr/local/man/man8/
+#gzip /usr/local/man/man8/steam-price-MAN.1
+
 # Checks if name_ID_list.json exists
 if [ ! -e "name_ID_list.json" ]; then
     echo "Downloading App list..."

@@ -10,7 +10,7 @@
 if [ ! -e "name_ID_list.json" ]; then
     echo "Downloading App list..."
     
-    wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v0001/ > name_ID_list.json
+    wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v2/ > name_ID_list.json
     
     echo "App list downloaded!"
     echo ""
@@ -21,7 +21,7 @@ while getopts ":ugq" opt; do
     u ) # Update data base: Names/ID's
     echo "Updating app list..."
     
-	wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v0001/ > name_ID_list.json
+	wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v2/ > name_ID_list.json
 	
 	echo "App list updated!"
 	echo ""
@@ -134,7 +134,10 @@ while getopts ":ugq" opt; do
 
 
 	if [ ! -e "name_ID_price_list.txt" ]; then
-		echo "History file doesnt exists"
+		echo "History file doesnt exists!"
+		echo ""
+		
+		continue
 	fi
 
 	if [ -z "$2" ]; then
@@ -142,8 +145,16 @@ while getopts ":ugq" opt; do
 		exit
 	fi
 
-	max_entries=21
+	max_entries=21 # Default max number of entries to show. Show the first max_entries entries
 	count=1
+	
+	# If the user passes a new number of max entries to show, uses that number instead
+	if [ ! "$3" = [^0-9]* ]; then
+        max_entries=$3
+        
+        let max_entries=max_entries+1
+        echo "max entries: $max_entries"
+	fi
 
 	# Searches how many lines contains the string passed as input
 	num_matches=$( grep -c -ie "^.*$2.*$" name_ID_price_list.txt )
@@ -157,11 +168,11 @@ while getopts ":ugq" opt; do
 	# Se a consulta for muito pouco específica, vai retornar muitas entradas
 	# Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
 	if [ "$num_matches" -gt "$max_entries" ]; then
-		echo "Too many matches. Displaying the first $((max_entries-1)):"
+		echo "Displaying the first $((max_entries-1)):"
 		
 		num_matches=$max_entries
 	else
-		echo $num_matches "Matches Found:"
+		echo "Matches Found: $num_matches"
 	fi
 
 	let num_matches=num_matches+1

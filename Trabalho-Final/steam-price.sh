@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Done by gvs0709 and bmeurer1
+# Hosted on github.com/gvs0709/Sistemas-Operacionais-2/Trabalho-Final
+
 # Checks if name_ID_list.json exists
 if [ ! -e "name_ID_list.json" ]; then
     echo "Downloading App list..."

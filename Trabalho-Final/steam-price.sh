@@ -1,20 +1,9 @@
 #!/bin/bash
 
 # Done by gvs0709 and bmeurer1
+# github.com/gvs0709
+# github.com/bmeurer1
 # Hosted on github.com/gvs0709/Sistemas-Operacionais-2/Trabalho-Final
-
-#install -g 0 -o 0 -m 0644 steam-price-MAN.1 /usr/local/man/man8/
-#gzip /usr/local/man/man8/steam-price-MAN.1
-
-# Checks if name_ID_list.json exists
-if [ ! -e "name_ID_list.json" ]; then
-    echo "Downloading App list..."
-    
-    wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v2/ > name_ID_list.json
-    
-    echo "App list downloaded!"
-    echo ""
-fi
 
 while getopts ":ugq" opt; do
   case ${opt} in
@@ -29,7 +18,7 @@ while getopts ":ugq" opt; do
     g ) # Update data base: Names/ID's/Price
 
 	# Search for all game IDs on the date base
-	game_IDs=$( cat name_ID_list.json | grep 'appid' | grep -oP '[^\D]*' )
+	game_IDs=$( cat name_ID_list.json | grep -o -e "appid\":[^,]*" | sed "s/appid\"://" )
 	
 	# Create a file to store retrieved values if it doesnt exist already
 	if [ ! -f "name_ID_price_list.txt" ]; then
@@ -149,11 +138,8 @@ while getopts ":ugq" opt; do
 	count=1
 	
 	# If the user passes a new number of max entries to show, uses that number instead
-	if [ ! "$3" = [^0-9]* ]; then
+	if [[ "$3" == [0-9]* ]]; then
         max_entries=$3
-        
-        let max_entries=max_entries+1
-        echo "max entries: $max_entries"
 	fi
 
 	# Searches how many lines contains the string passed as input
@@ -168,7 +154,7 @@ while getopts ":ugq" opt; do
 	# Se a consulta for muito pouco específica, vai retornar muitas entradas
 	# Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
 	if [ "$num_matches" -gt "$max_entries" ]; then
-		echo "Displaying the first $((max_entries-1)):"
+		echo "Displaying the first $((max_entries)):"
 		
 		num_matches=$max_entries
 	else
@@ -196,8 +182,10 @@ while getopts ":ugq" opt; do
 	done
 
       ;;
-    \? ) echo "Usage: cmd [-u] [-g] [-q]"
-		 echo "Invalid option: $OPTARG" 1>&2
+		 
+    \? ) 
+    echo "Invalid option: $OPTARG" 1>&2
+    echo "Usage: steam-price [OPTION]... [PARAMETER]..."
       ;;
   esac
 done

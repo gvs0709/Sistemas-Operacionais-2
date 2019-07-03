@@ -129,7 +129,7 @@ while getopts ":ugqs" opt; do
             exit
         fi
 
-        max_entries=21 # Default max number of entries to show. Show the first max_entries entries
+        max_entries=0 # Show all entries entries by default
         count=1
 
         # If the user passes a new number of max entries to show, uses that number instead
@@ -145,6 +145,11 @@ while getopts ":ugqs" opt; do
             echo ""
             exit
         fi
+        
+        if [ "$max_entries" -eq 0 ]; then
+            max_entries=$num_matches
+            #echo "MAX ENTRIES = NUM MATCHES"
+        fi
 
         # Se a consulta for muito pouco específica, vai retornar muitas entradas
         # Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
@@ -152,6 +157,7 @@ while getopts ":ugqs" opt; do
             echo "Displaying the first $((max_entries)):"
             
             num_matches=$max_entries
+            
         else
             echo "Matches Found: $num_matches"
         fi
@@ -272,7 +278,7 @@ while getopts ":ugqs" opt; do
         
         echo ""
         
-        max_entries=21 # Default max number of entries to show. Show the first max_entries entries
+        max_entries=0 # Show all entries by default
         count=1
 
         # If the user passes a new number of max entries to show, uses that number instead
@@ -288,6 +294,11 @@ while getopts ":ugqs" opt; do
             echo ""
             exit
         fi
+        
+        if [ "$max_entries" -eq 0 ]; then
+            max_entries=$num_matches
+            #echo "MAX ENTRIES = NUM MATCHES"
+        fi
 
         # Se a consulta for muito pouco específica, vai retornar muitas entradas
         # Seta valor máximo de entradas a serem mostradas como 10. Passível de modificação
@@ -295,6 +306,7 @@ while getopts ":ugqs" opt; do
             echo "Displaying the first $((max_entries)):"
             
             num_matches=$max_entries
+            
         else
             echo "Matches Found: $num_matches"
         fi

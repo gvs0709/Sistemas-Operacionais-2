@@ -1,8 +1,8 @@
 .\" Man page for steam-price
-.TH man 1 "02 june 2019" "1.0" "steam-price man page"
+.TH man 1 "july 2019" "1.0" "steam-price man page"
 
 .SH NAME
-steam-price \- shows a game's lowest recorded price and the current price on Valve's Steam plataform
+steam-price \- shows a game's lowest recorded price on Valve's Steam plataform
 
 .SH SYNOPSIS
 steam-price [OPTION]... [PARAMETER]...
@@ -11,23 +11,20 @@ steam-price [OPTION]... [PARAMETER]...
 steam-price is a shell program that searches for game prices on Valve's Steam using Steam's own API and stores the lowest one found for each game.
 
 .SH OPTIONS
--u
-.PP
-Updates the 'games to be searched' DB.
+-u    Updates the 'games to be searched' DB.
 
--g
-.PP
-Based on the output of -u, searches for and updates the price of every game listed if the new price is lower than current recorded one.
+-g    Based on the output of -u, searches for and updates the price of every game listed if the new price is lower than current recorded one.
 
--q
-.PP
-Search for [PARAMETER] in Steam DB and return the lowest price ever found by the script if it was searched before.
+-q    Search for [PARAMETER] in Steam DB and return the lowest price ever found by the script if it was searched before.
 
 .SH SEE ALSO
-Source code available at <https://github.com/gvs0709/Sistemas-Operacionais-2/Trabalho-Final>
+Source code available at https://github.com/gvs0709/Sistemas-Operacionais-2/tree/master/Trabalho-Final
 
 .SH BUGS
-With games that are temporarily free the script was not tested
+With games that are temporarily free the script was not tested yet.
+
+.SH REPORTING BUGS
+Report any bugs at https://github.com/gvs0709/Sistemas-Operacionais-2/issues
 
 .SH AUTORS
-<https://github.com/gvs0709> and <https://github.com/bmeurer1>
+https://github.com/gvs0709 and https://github.com/bmeurer1

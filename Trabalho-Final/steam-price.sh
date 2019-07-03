@@ -117,7 +117,7 @@ while getopts ":ugqs" opt; do
     ;;
     
     q ) # Does a search on the DB for the game's smallest price
-        if [ ! -e "name_ID_price_list.txt" ]; then
+        if [ ! -f "name_ID_price_list.txt" ]; then
             echo "History file doesnt exists!"
             echo ""
             

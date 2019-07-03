@@ -333,7 +333,8 @@ while getopts ":ugqs" opt; do
             
     \? ) 
         echo "Invalid option: $OPTARG" 1>&2
-        echo "Usage: $0 [OPTION]... [PARAMETER]..."
+        echo "To see valid options please check the man page"
+        #echo "Usage: $0 [OPTION]... [PARAMETER]..."
     ;;
     esac
 done

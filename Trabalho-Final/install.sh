@@ -11,9 +11,25 @@ if [ ! -d $HOME/.local/bin/steam-price ]; then # If steam-price directory doesnt
 fi
 
 chmod +x steam-price.sh # Makes the script executable
-mv steam-price.sh $HOME/.local/bin/steam-price # Moves the script to the created directory
+cp steam-price.sh $HOME/.local/bin/steam-price # Moves the script to the created directory
 
-if [ ! $SHELL == "/bin/bash" -o ! $SHELL == "/bin/zsh" ]; then
+if [ $SHELL == "/bin/bash" -o $SHELL == "/bin/zsh" ]; then
+    # Exports the script path to both config files if possible
+    if [ -f "$HOME/.bashrc" ]; then
+        echo "" >> $HOME/.bashrc
+        echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.bashrc
+        echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.bashrc # Export the script path so that its executable from any directory
+        echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.bashrc
+    fi
+
+    if [ -f "$HOME/.zshrc" ]; then
+        echo "" >> $HOME/.zshrc
+        echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.zshrc
+        echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.zshrc # Export the script path so that its executable from any directory
+        echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.zshrc
+    fi
+
+else 
     echo ""
     echo "Your default shell is not bash or zsh. Please pass the full path to your shell config file."
     echo "e.g. full/path/to/file/configFile"
@@ -47,21 +63,6 @@ if [ ! $SHELL == "/bin/bash" -o ! $SHELL == "/bin/zsh" ]; then
         fi
     fi
     #done
-
-else # Exports the script path to both config files if possible
-    if [ -f "$HOME/.bashrc" ]; then
-        echo "" >> $HOME/.bashrc
-        echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.bashrc
-        echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.bashrc # Export the script path so that its executable from any directory
-        echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.bashrc
-    fi
-
-    if [ -f "$HOME/.zshrc" ]; then
-        echo "" >> $HOME/.zshrc
-        echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.zshrc
-        echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.zshrc # Export the script path so that its executable from any directory
-        echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.zshrc
-    fi
 fi
 
 echo "Done!"

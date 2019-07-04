@@ -10,8 +10,8 @@ if [ ! -d $HOME/.local/bin/steam-price ]; then # If steam-price directory doesnt
     mkdir $HOME/.local/bin/steam-price # Creates a directory for the script and the files it downloads
 fi
 
-chmod +x steam-price.sh # Makes the script executable
-cp steam-price.sh $HOME/.local/bin/steam-price # Moves the script to the created directory
+chmod +x steam-price # Makes the script executable
+cp steam-price $HOME/.local/bin/steam-price # Moves the script to the created directory
 
 if [ $SHELL == "/bin/bash" -o $SHELL == "/bin/zsh" ]; then
     # Exports the script path to both config files if possible
@@ -71,15 +71,13 @@ echo ""
 # Install the script's man page
 echo "Installing steam-price man page..."
 
-install -g 0 -o 0 -m 0644 steam-price-MAN.1 /usr/local/man/man1/
-gzip /usr/local/man/man1/steam-price-MAN.1
+sudo install -g 0 -o 0 -m 0644 steam-price.1 /usr/share/man/man1/
+sudo gzip /usr/share/man/man1/steam-price.1
 
 echo "Done!"
 echo ""
 
-cd $HOME/.local/bin/steam-price
-
-./steam-price -u
+$HOME/.local/bin/steam-price/steam-price -u
 echo ""
 
 while true; do
@@ -95,7 +93,7 @@ while true; do
         break
         
     elif [[ "$options" == [Yy]* ]]; then
-        ./steam-price -g
+        $HOME/.local/bin/steam-price/steam-price -g
         
         echo ""
         echo "Instalation finished!"

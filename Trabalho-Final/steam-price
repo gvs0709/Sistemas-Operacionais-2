@@ -5,6 +5,8 @@
 # github.com/bmeurer1
 # Hosted on github.com/gvs0709/Sistemas-Operacionais-2/Trabalho-Final
 
+cd $HOME/.local/bin/steam-price
+
 while getopts ":ugqs" opt; do
     case ${opt} in
     u ) # Update data base: Names/ID's

@@ -168,7 +168,7 @@ while getopts ":ugqs" opt; do
         while [ ! "$count" -eq "$num_matches" ]; do
             nome=$( grep -ie "^.*$2.*$" name_ID_price_list.txt | sed -n "$count p" )
 
-            id=$( grep -A1 -ie "^.*$nome.*$" name_ID_price_list.txt | tail -n 1 )
+            id=$( grep -A1 -iF "$nome" name_ID_price_list.txt | sed -n 2p )
 
             preco=$( grep -A1 -ie "^.*$id.*$" name_ID_price_list.txt | tail -n 1 )
 
@@ -317,7 +317,7 @@ while getopts ":ugqs" opt; do
         while [ ! "$count" -eq "$num_matches" ]; do
             nome=$( grep -ie "^.*$2.*$" name_ID_price_list_2.txt | sed -n "$count p" )
 
-            id=$( grep -A1 -ie "^.*$nome.*$" name_ID_price_list_2.txt | tail -n 1 )
+            id=$( grep -A1 -iF "$nome" name_ID_price_list_2.txt | sed -n 2p )
 
             preco=$( grep -A1 -ie "^.*$id.*$" name_ID_price_list_2.txt | tail -n 1 )
 

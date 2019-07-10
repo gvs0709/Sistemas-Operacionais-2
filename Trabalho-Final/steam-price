@@ -272,8 +272,8 @@ while getopts ":ugqs" opt; do
                     fi
                 fi
 
-                echo -en "\r"
-                echo -e "Game successfully updated. ID: $ID, Name: $nome"
+                #echo -en "\r"
+                #echo -e "Game successfully updated. ID: $ID, Name: $nome"
                 #echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
             fi
         done

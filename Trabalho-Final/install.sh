@@ -16,53 +16,66 @@ cp steam-price $HOME/.local/bin/steam-price # Moves the script to the created di
 if [ $SHELL == "/bin/bash" -o $SHELL == "/bin/zsh" ]; then
     # Exports the script path to both config files if possible
     if [ -f "$HOME/.bashrc" ]; then
-        echo "" >> $HOME/.bashrc
-        echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.bashrc
-        echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.bashrc # Export the script path so that its executable from any directory
-        echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.bashrc
+        test=$(grep -e "export PATH=.*:.*/.local/bin/steam-price" $HOME/.bashrc)
+        
+        if [ "$test" == "" ]; then # Checks if the export line is already there, if not write it
+            echo "" >> $HOME/.bashrc
+            echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.bashrc
+            echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.bashrc # Export the script path so that its executable from any directory
+            echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.bashrc
+        fi
     fi
 
     if [ -f "$HOME/.zshrc" ]; then
-        echo "" >> $HOME/.zshrc
-        echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.zshrc
-        echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.zshrc # Export the script path so that its executable from any directory
-        echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.zshrc
+        test=$(grep -e "export PATH=.*:.*/.local/bin/steam-price" $HOME/.zshrc)
+        
+        if [ "$test" == "" ]; then # Checks if the export line is already there, if not write it
+            echo "" >> $HOME/.zshrc
+            echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $HOME/.zshrc
+            echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $HOME/.zshrc # Export the script path so that its executable from any directory
+            echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $HOME/.zshrc
+        fi
     fi
 
-else 
+else # Tests needed, not finished!!!
     echo ""
     echo "Your default shell is not bash or zsh. Please pass the full path to your shell config file."
-    echo "e.g. full/path/to/file/configFile"
+    echo "e.g. full/path/to/shell/rcFile/shellrcFile"
     echo "You can also just press 'Enter' to skip this step"
     echo -n "> "
     read newPath
     
-    #while true; do
-    if [ "$newPath" == "" ]; then # If user hits 'Enter' does nothing else
-        echo ""
-        echo " Skipping..."
-        
-        #break
-        
-    else
-        if [ -f "$newPath" ]; then # Checks if newPath exists and is a file
-            echo "" >> $newPath
-            echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $newPath
-            echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $newPath # Export the script path so that its executable from any directory
-            echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $newPath
+    while true; do
+        if [ "$newPath" == "" ]; then # If user hits 'Enter' does nothing else
             echo ""
+            echo " Skipping..."
             
-            #break
+            break
             
         else
-            echo ""
-            echo "The passed path is not a file or doesnt exists!"
-            #echo "Please enter the path again or press 'Enter' to skip"
-            #echo -n "> "
-            #read newPath
+            if [ -f "$newPath" ]; then # Checks if newPath exists and is a file
+                test=$(grep -e "export PATH=.*:.*/.local/bin/steam-price" $newPath)
+                
+                if [ "$test" == "" ]; then
+                    echo "" >> $newPath
+                    echo "#------- BEGIN ADDED BY STEAM-PRICE INSTALLER -------#" >> $newPath
+                    echo "export PATH=$PATH:$HOME/.local/bin/steam-price" >> $newPath # Export the script path so that its executable from any directory
+                    echo "#-------- END ADDED BY STEAM-PRICE INSTALLER --------#" >> $newPath
+                fi
+                
+                echo ""
+                
+                #break
+                
+            else
+                echo ""
+                echo "The passed path is not a file or doesnt exists!"
+                echo "Please enter the path again or press 'Enter' to skip"
+                echo -n "> "
+                read newPath
+            fi
         fi
-    fi
-    #done
+    done
 fi
 
 echo "Done!"

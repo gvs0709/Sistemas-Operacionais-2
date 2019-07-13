@@ -12,7 +12,7 @@ while getopts ":ugqs" opt; do
     u ) # Update data base: Names/ID's
         echo "Updating app list..."
 
-        wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v2/ > name_ID_list.json
+        wget -qO - http://api.steampowered.com/ISteamApps/GetAppList/v2 > name_ID_list.json
 
         echo "App list updated!"
         echo ""
@@ -24,7 +24,7 @@ while getopts ":ugqs" opt; do
 
         # Create a file to store retrieved values if it doesnt exist already
         if [ ! -f "name_ID_price_list.txt" ]; then
-            echo "" > name_ID_price_list.txt
+            > name_ID_price_list.txt
         fi
 
         count=0
@@ -76,17 +76,28 @@ while getopts ":ugqs" opt; do
                 preco=$( echo $data | grep -o 'final":[0-9]*' --color=always | sed -n '1p' | cut -b 19- )
                 
                 if [ -z "$preco" ]; then
-                    echo -en "\r"
-                    echo "Failed to fetch games. ID: $ID. Price not found"
-                    echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
-                    continue
+                    isFree=$( echo $data | grep -o 'is_free":[a-z]*' --color=always | sed "s/is_free\"://" | cut -b 12- )
+                    isFree=${isFree:: -6}
+                    
+                    if [ $isFree == "true" ]; then
+                        preco=0
+                        
+                    else
+                        echo -en "\r"
+                        echo "Failed to fetch game. ID: $ID. Price not found"
+                        #echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
+                        continue
+                    fi
                 fi
                 
-                preco=${preco:: -6}
+                len=${#preco}
+                
+                if [ $len -gt 6 ]; then
+                    preco=${preco:: -6}
+                fi
+                
                 tmp_id=$( grep -e "^$ID$" name_ID_price_list.txt )
                 tmp_preco=$( grep -A1 -e "^$ID$" name_ID_price_list.txt | tail -n 1 )
-
-                #echo $tmp_preco
 
                 # If entry doesnt exists, write it on the file. Otherwise swap the value if it is smaller
                 if [ -z "$tmp_id" ]; then
@@ -115,7 +126,6 @@ while getopts ":ugqs" opt; do
         done
         
         echo ""
-        #echo $game_IDs
     ;;
     
     q ) # Does a search on the DB for the game's smallest price
@@ -177,7 +187,7 @@ while getopts ":ugqs" opt; do
             echo ""
             echo "Game: " $nome
             echo "Steam ID: " $id
-            echo "Cheapest Recorded Price: R\$$(($preco/100)).$(($preco - 100*($preco/100)))"
+            echo "Cheapest Recorded Price: \$$(($preco/100)).$(($preco - 100*($preco/100)))"
 
             let count=count+1
 
@@ -195,7 +205,7 @@ while getopts ":ugqs" opt; do
         
         # Create a file to store retrieved values if it doesnt exist already
         if [ ! -f "name_ID_price_list_2.txt" ]; then
-            echo "" > name_ID_price_list_2.txt
+            > name_ID_price_list_2.txt
         fi
         
         for ID in $game_IDs; do
@@ -240,17 +250,28 @@ while getopts ":ugqs" opt; do
                 preco=$( echo $data | grep -o 'final":[0-9]*' --color=always | sed -n '1p' | cut -b 19- )
                 
                 if [ -z "$preco" ]; then
-                    echo -en "\r"
-                    echo "Failed to fetch games. ID: $ID. Price not found"
-                    #echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
-                    continue
+                    isFree=$( echo $data | grep -o 'is_free":[a-z]*' --color=always | sed "s/is_free\"://" | cut -b 12- )
+                    isFree=${isFree:: -6}
+                    
+                    if [ $isFree == "true" ]; then
+                        preco=0
+                        
+                    else
+                        echo -en "\r"
+                        echo "Failed to fetch game. ID: $ID. Price not found"
+                        #echo -n "Fetching games... ($count/$( wc -w <<< $game_IDs ))"
+                        continue
+                    fi
                 fi
                 
-                preco=${preco:: -6}
+                len=${#preco}
+                
+                if [ $len -gt 6 ]; then
+                    preco=${preco:: -6}
+                fi
+                
                 tmp_id=$( grep -e "^$ID$" name_ID_price_list_2.txt )
                 tmp_preco=$( grep -A1 -e "^$ID$" name_ID_price_list_2.txt | tail -n 1 )
-
-                #echo $tmp_preco
 
                 # If entry doesnt exists, write it on the file. Otherwise swap the value if it is smaller
                 if [ -z "$tmp_id" ]; then
@@ -258,7 +279,7 @@ while getopts ":ugqs" opt; do
                     echo ""		>> name_ID_price_list_2.txt
                     echo $nome  >> name_ID_price_list_2.txt
                     echo $ID    >> name_ID_price_list_2.txt
-                    echo $preco >> name_ID_price_list_2.txt
+                    echo "$preco" >> name_ID_price_list_2.txt
                     
                 else
                     if [ "$tmp_preco" -gt "$preco" ]; then
@@ -326,7 +347,7 @@ while getopts ":ugqs" opt; do
             echo ""
             echo "Game: " $nome
             echo "Steam ID: " $id
-            echo "Cheapest Recorded Price: R\$$(($preco/100)).$(($preco - 100*($preco/100)))"
+            echo "Cheapest Recorded Price: \$$(($preco/100)).$(($preco - 100*($preco/100)))"
 
             let count=count+1
 

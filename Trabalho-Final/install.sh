@@ -106,7 +106,7 @@ while true; do
         break
         
     elif [[ "$options" == [Yy]* ]]; then
-        $HOME/.local/bin/steam-price/steam-price -g
+        $HOME/.local/bin/steam-price/steam-price -d
         
         echo ""
         echo "Instalation finished!"

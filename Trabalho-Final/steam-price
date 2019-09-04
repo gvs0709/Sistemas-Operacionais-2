@@ -7,7 +7,7 @@
 
 cd $HOME/.local/bin/steam-price
 
-while getopts ":ugqs" opt; do
+while getopts ":udqs" opt; do
     case ${opt} in
     u ) # Update data base: Names/ID's
         echo "Updating app list..."
@@ -18,7 +18,7 @@ while getopts ":ugqs" opt; do
         echo ""
     ;;
     
-    g ) # Update data base: Names/ID's/Price
+    d ) # Update data base: Names/ID's/Price
         # Search for all game IDs on the database
         game_IDs=$( cat name_ID_list.json | grep -o -e "appid\":[^,]*" | sed "s/appid\"://" )
 
@@ -196,16 +196,16 @@ while getopts ":ugqs" opt; do
         
     s )
         if [ -z "$2" ]; then
-        echo "Please inform the game's name: $0 -s <Name>"
-        exit
+	        echo "Please inform the game's name: $0 -s <Name>"
+	        exit
         fi
         
         # Search for all game IDs on the database that matches the string the user searched for
         game_IDs=$( cat name_ID_list.json | grep -oe "[^}{]*" | grep -ie "^.*$2.*$"| grep -oe "appid\":[^,]*" | sed "s/appid\"://" )
         
         # Create a file to store retrieved values if it doesnt exist already
-        if [ ! -f "name_ID_price_list_2.txt" ]; then
-            > name_ID_price_list_2.txt
+        if [ ! -f "name_ID_price_list.txt" ]; then
+            > name_ID_price_list.txt
         fi
         
         for ID in $game_IDs; do
@@ -270,16 +270,16 @@ while getopts ":ugqs" opt; do
                     preco=${preco:: -6}
                 fi
                 
-                tmp_id=$( grep -e "^$ID$" name_ID_price_list_2.txt )
-                tmp_preco=$( grep -A1 -e "^$ID$" name_ID_price_list_2.txt | tail -n 1 )
+                tmp_id=$( grep -e "^$ID$" name_ID_price_list.txt )
+                tmp_preco=$( grep -A1 -e "^$ID$" name_ID_price_list.txt | tail -n 1 )
 
                 # If entry doesnt exists, write it on the file. Otherwise swap the value if it is smaller
                 if [ -z "$tmp_id" ]; then
                     # Write game's info  on the file
-                    echo ""		>> name_ID_price_list_2.txt
-                    echo $nome  >> name_ID_price_list_2.txt
-                    echo $ID    >> name_ID_price_list_2.txt
-                    echo "$preco" >> name_ID_price_list_2.txt
+                    echo ""		>> name_ID_price_list.txt
+                    echo $nome  >> name_ID_price_list.txt
+                    echo $ID    >> name_ID_price_list.txt
+                    echo "$preco" >> name_ID_price_list.txt
                     
                 else
                     if [ "$tmp_preco" -gt "$preco" ]; then
@@ -289,7 +289,7 @@ while getopts ":ugqs" opt; do
                         # -i: Permite edição para substituir
                         # -p: Pattern matching
                         # -e: Executa comando
-                        perl -i -0pe "s/\n.*\n$ID\n.*\n/\n$nome\n$ID\n$preco\n/" name_ID_price_list_2.txt
+                        perl -i -0pe "s/\n.*\n$ID\n.*\n/\n$nome\n$ID\n$preco\n/" name_ID_price_list.txt
                     fi
                 fi
 
@@ -310,7 +310,7 @@ while getopts ":ugqs" opt; do
         fi
 
         # Searches how many lines contains the string passed as input
-        num_matches=$( grep -c -ie "^.*$2.*$" name_ID_price_list_2.txt )
+        num_matches=$( grep -c -ie "^.*$2.*$" name_ID_price_list.txt )
 
         if [ "$num_matches" -eq 0 ]; then
             echo "No matches found!"
@@ -338,11 +338,11 @@ while getopts ":ugqs" opt; do
 
         # For each of the found entries, searches for the game name, ID and price
         while [ ! "$count" -eq "$num_matches" ]; do
-            nome=$( grep -ie "^.*$2.*$" name_ID_price_list_2.txt | sed -n "$count p" )
+            nome=$( grep -ie "^.*$2.*$" name_ID_price_list.txt | sed -n "$count p" )
 
-            id=$( grep -A1 -iFx "$nome" name_ID_price_list_2.txt | sed -n 2p )
+            id=$( grep -A1 -iFx "$nome" name_ID_price_list.txt | sed -n 2p )
 
-            preco=$( grep -A1 -ie "^.*$id.*$" name_ID_price_list_2.txt | tail -n 1 )
+            preco=$( grep -A1 -ie "^.*$id.*$" name_ID_price_list.txt | tail -n 1 )
 
             echo ""
             echo "Game: " $nome
